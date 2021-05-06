@@ -60,7 +60,7 @@ def _resolve_ros_workspace(ros_workspace_input: str) -> Path:
     if not (ros_workspace_dir / 'src').is_dir():
         raise ValueError(
             'specified workspace "{}" does not look like a colcon workspace '
-            '(there is no "src/" directory). cannot continue'.format(ros_workspace_dir))
+            '(there is no "src/" directory). Cannot continue'.format(ros_workspace_dir))
 
     return ros_workspace_dir
 
@@ -178,6 +178,12 @@ def parse_args(args: List[str]) -> argparse.Namespace:
         help='Package the resulting build as a runnable Docker image, with all runtime '
              'dependencies installed. The image will use the tag provided to this argument. '
              'Example: "my_registry/image_name:image_tag"')
+    parser.add_argument(
+        '--appimage-name',
+        type=str,
+        required=False,
+        default=None,
+        help='Package the resulting build as a runnable Appimage file.')
 
     return parser.parse_args(args)
 
@@ -210,12 +216,13 @@ def cross_compile_pipeline(
         custom_rosdep_script,
         custom_data_dir,
         custom_setup_script,
-        args.runtime_tag)
+        args.runtime_tag,
+        args.appimage_name)
 
     skip = set(args.stages_skip)
 
     # Only package the runtime image if the user has specified a tag for it
-    if not args.runtime_tag:
+    if not (args.runtime_tag and args.appimage_name):
         skip.add(PackageRuntimeImageStage.NAME)
 
     for stage in _PIPELINE:

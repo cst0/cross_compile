@@ -35,6 +35,7 @@ PipelineStageOptions = NamedTuple(
         ('custom_data_dir', Optional[Path]),
         ('custom_setup_script', Optional[Path]),
         ('runtime_tag', Optional[str]),
+        ('appimage_name', Optional[str]),
     ])
 
 

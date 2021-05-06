@@ -238,10 +238,14 @@ NOTE: for trivial text files, as in the preceding example, you could have create
 
 
 ### Runtime Image
+`ros_cross_compile` can optionally create and tag a Docker image or an AppImage
+file that contains the build output and its runtime dependencies. Specifying
+one of the build-specific flags (`--runtime-tag` or `--appimage-name`) will
+trigger this functionality.
 
-`ros_cross_compile` can optionally create and tag a Docker image that contains the build output and its runtime dependencies.
+#### Docker
 
-The argument `--runtime-tag` takes a single value, which is the tag used for the output image.
+The argument `--runtime-tag` takes a single value which provides the tag used for an output Docker image.
 
 ```
 OUTPUT_IMAGE=my_registry/image_name:image_tag
@@ -262,10 +266,23 @@ docker run -it $OUTPUT_IMAGE
 ros2 launch my_package my.launch.py
 ```
 
-Note: Currently this feature is a thin layer on top of the image used for building, so it is not a fully minimal image - it contains build tools, build dependencies, and test dependencies in addition to the necessary runtime dependencies.
-Future work is planned to slim down this output image to a properly minimal runtime.
-This work is tracked in https://github.com/ros-tooling/cross_compile/issues/263.
+Note: Currently this feature is a thin layer on top of the image used for
+building, so it is not a fully minimal image - it contains build tools, build
+dependencies, and test dependencies in addition to the necessary runtime
+dependencies.  Future work is planned to slim down this output image to a
+properly minimal runtime.  This work is tracked in
+https://github.com/ros-tooling/cross_compile/issues/263.
 
+#### AppImage
+The argument `--appimage-name` can be used to specify the name of an output
+`.appimage` file. Appimages are files that can then be executed as standalone
+files on the same or on other machines:
+
+```
+OUTPUT_APPIMAGE=mycode
+ros_cross_compile $workspace --appimage-name $OUTPUT_APPIMAGE
+./mycode.Appimage
+```
 
 ## Tutorial
 
